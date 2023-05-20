@@ -1,12 +1,15 @@
 package com.example.MySQL.controllers;
 
-import com.example.MySQL.Repository.Repository;
+import com.example.MySQL.repository.Repository;
 import com.example.MySQL.api.request.Request;
 import com.example.MySQL.api.response.Response;
 import com.example.MySQL.model.Course;
+import com.example.MySQL.model.Student;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.hibernate.type.descriptor.java.ObjectJavaType;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @org.springframework.web.bind.annotation.RestController
 @RequiredArgsConstructor
@@ -17,7 +20,11 @@ public class RestController {
     @PostMapping("/")
     public Boolean addCourse(@RequestBody Request request) {
         Course course = new Course();
+        Student student = new Student();
+        student.setName(request.getStudent());
+
         course.setName(request.getName());
+        course.setStudent(student);
 
 
         if (course.getName() != null) {
@@ -32,7 +39,10 @@ public class RestController {
         }
     }
 
-    public void addStudent() {
-
+    @GetMapping("/{id}")
+    public String get(@PathVariable Integer id) {
+        Course course = repository.getCourseById(id);
+        course.getStudent().getName();
+        return "Name Course: ".concat(course.getName()).concat("\nName student: ").concat(course.getStudent().getName());
     }
 }
